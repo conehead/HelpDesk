@@ -1,0 +1,16 @@
+name: HelpDesk
+main: com.connor.helpdesk.HelpDesk
+version: 1.0
+commands:
+    helpdesk:
+        aliases: ticket
+        description: Use the help desk
+        usage: /helpdesk ?
+permissions:
+    helpdesk.mod:
+        description: The Mod level of HelpDesk support
+    helpdesk.admin:
+        description: The Admin level of HelpDesk support
+    helpdesk.op:
+        description: The OP level of HelpDesk support
+        default: op
