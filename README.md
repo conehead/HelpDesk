@@ -23,16 +23,20 @@ HelpDesk operates under the /helpdesk and /ticket commands, and they operate com
 
 **Commands for Normal Players:**
 
-	/helpdesk ?                | displays the help menu
-	/helpdesk file <message>   | creates a ticket and notifies staff
-	/helpdesk read <Ticket ID> | displays the contents of a ticket they've opened
+	/helpdesk ?                     | displays the help menu
+	/helpdesk file <message>        | creates a ticket and notifies staff
+	/helpdesk read <Ticket ID>      | displays the contents of a ticket they've opened
+	/helpdesk urgent <Ticket ID>    | marks a ticket as urgent
+	/helpdesk noturgent <Ticket ID> | marks a ticket as normal
 
 **Commands for Staff (Mod, Admin, OP):**
 
-	/helpdesk list                 | displays a list of tickets open
-	/helpdesk read <Ticket ID>     | reads the contents of any of the tickets
-	/helpdesk assign <Ticket ID>   | assigns the player to the ticket
-	/helpdesk elevate <Ticket ID>  | elevates the ticket level to ADMIN or OP
-	/helpdesk complete <Ticket ID> | marks the ticket as complete
-	/helpdesk remove <Ticket ID>   | removes a ticket
+	/helpdesk list                  | displays a list of tickets open
+	/helpdesk read <Ticket ID>      | reads the contents of any of the tickets
+	/helpdesk assign <Ticket ID>    | assigns the player to the ticket
+	/helpdesk elevate <Ticket ID>   | elevates the ticket level to ADMIN or OP
+	/helpdesk complete <Ticket ID>  | marks the ticket as complete
+	/helpdesk remove <Ticket ID>    | removes a ticket
+	/helpdesk urgent <Ticket ID>    | marks a ticket as urgent
+	/helpdesk noturgent <Ticket ID> | marks a ticket as normal
 It's that simple.
