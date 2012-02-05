@@ -1,6 +1,7 @@
 package com.connor.helpdesk;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -23,6 +24,23 @@ public class HelpDesk extends JavaPlugin {
         commandExecutor = new HelpCommandExecutor(this);
 
         getCommand("helpdesk").setExecutor(commandExecutor);
+        getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
+            public void run() {
+                int openTickets = 0;
+                for (HelpTicket ticket : tickets) {
+                    if (!ticket.isAssigned() && !ticket.isCompleted()) {
+                        openTickets++;
+                    }
+                }
+                if (openTickets > 0) {
+                    if (openTickets == 1) {
+                        notifyAllWithPermission(HelpLevel.MOD, ChatColor.GOLD + "[HELPDESK] " + ChatColor.GRAY + "There is " + ChatColor.DARK_GREEN + "1 ticket open");
+                    } else {
+                        notifyAllWithPermission(HelpLevel.MOD, ChatColor.GOLD + "[HELPDESK] " + ChatColor.GRAY + "There are " + ChatColor.DARK_GREEN + openTickets + " tickets open");
+                    }
+                }
+            }
+        }, 600, 600);
 
         log.info("HelpDesk enabled");
     }
