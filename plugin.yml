@@ -9,8 +9,10 @@ commands:
 permissions:
     helpdesk.mod:
         description: The Mod level of HelpDesk support
+        default: false
     helpdesk.admin:
         description: The Admin level of HelpDesk support
+        default: false
     helpdesk.op:
         description: The OP level of HelpDesk support
         default: op

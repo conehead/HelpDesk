@@ -62,9 +62,9 @@ public class HelpTicket {
     }
     
     public void elevate(Player player) {
-        if (level == HelpLevel.MOD && player.hasPermission("helpdesk.mod")) {
+        if ((level == HelpLevel.MOD) && (player.hasPermission("helpdesk.mod") || player.hasPermission("helpdesk.admin") || player.hasPermission("helpdesk.op"))) {
             level = HelpLevel.ADMIN;
-        } else if (level == HelpLevel.ADMIN && player.hasPermission("helpdesk.admin")) {
+        } else if ((level == HelpLevel.ADMIN) && (player.hasPermission("helpdesk.admin") || player.hasPermission("helpdesk.op"))) {
             level = HelpLevel.OP;
         }
     }

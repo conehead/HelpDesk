@@ -25,17 +25,43 @@ public class HelpDesk extends JavaPlugin {
         getCommand("helpdesk").setExecutor(commandExecutor);
         getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
             public void run() {
-                int openTickets = 0;
+                int modTickets = 0;
+                int adminTickets = 0;
+                int opTickets = 0;
                 for (HelpTicket ticket : tickets) {
                     if (!ticket.isAssigned() && !ticket.isCompleted()) {
-                        openTickets++;
+                        if (ticket.getLevel() == HelpLevel.MOD) {
+                            modTickets++;
+                            adminTickets++;
+                            opTickets++;
+                        } else if (ticket.getLevel() == HelpLevel.ADMIN) {
+                            adminTickets++;
+                            opTickets++;
+                        } else if (ticket.getLevel() == HelpLevel.OP) {
+                            opTickets++;
+                        }
                     }
                 }
-                if (openTickets > 0) {
-                    if (openTickets == 1) {
-                        notifyAllHelpdeskStaff(ChatColor.GOLD + "[HELPDESK] " + ChatColor.GRAY + "There is " + ChatColor.DARK_GREEN + "1 ticket open");
+                
+                if (modTickets > 0) {
+                    if (modTickets == 1) {
+                        sendMessageToStaffLevel(HelpLevel.MOD, ChatColor.GOLD + "[HELPDESK] " + ChatColor.GRAY + "There is " + ChatColor.DARK_GREEN + "1 ticket open");
                     } else {
-                        notifyAllHelpdeskStaff(ChatColor.GOLD + "[HELPDESK] " + ChatColor.GRAY + "There are " + ChatColor.DARK_GREEN + openTickets + " tickets open");
+                        sendMessageToStaffLevel(HelpLevel.MOD, ChatColor.GOLD + "[HELPDESK] " + ChatColor.GRAY + "There are " + ChatColor.DARK_GREEN + modTickets + " tickets open");
+                    }
+                }
+                if (adminTickets > 0) {
+                    if (modTickets == 1) {
+                        sendMessageToStaffLevel(HelpLevel.ADMIN, ChatColor.GOLD + "[HELPDESK] " + ChatColor.GRAY + "There is " + ChatColor.DARK_GREEN + "1 ticket open");
+                    } else {
+                        sendMessageToStaffLevel(HelpLevel.ADMIN, ChatColor.GOLD + "[HELPDESK] " + ChatColor.GRAY + "There are " + ChatColor.DARK_GREEN + adminTickets + " tickets open");
+                    }
+                }
+                if (opTickets > 0) {
+                    if (opTickets == 1) {
+                        sendMessageToStaffLevel(HelpLevel.OP, ChatColor.GOLD + "[HELPDESK] " + ChatColor.GRAY + "There is " + ChatColor.DARK_GREEN + "1 ticket open");
+                    } else {
+                        sendMessageToStaffLevel(HelpLevel.OP, ChatColor.GOLD + "[HELPDESK] " + ChatColor.GRAY + "There are " + ChatColor.DARK_GREEN + opTickets + " tickets open");
                     }
                 }
             }
@@ -100,6 +126,24 @@ public class HelpDesk extends JavaPlugin {
     public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
         System.out.println("lawlawlawl");
         return false;
+    }
+
+    public void sendMessageToStaffLevel(HelpLevel level, String message) {
+        for (Player p : getServer().getOnlinePlayers()) {
+            if (level == HelpLevel.MOD) {
+                if (p.hasPermission("helpdesk.mod")) {
+                    p.sendMessage(message);
+                }
+            } else if (level == HelpLevel.ADMIN) {
+                if (p.hasPermission("helpdesk.admin")) {
+                    p.sendMessage(message);
+                }
+            } else if (level == HelpLevel.OP) {
+                if (p.hasPermission("helpdesk.op")) {
+                    p.sendMessage(message);
+                }
+            }
+        }
     }
 
     public void notifyAllHelpdeskStaff(String message) {
