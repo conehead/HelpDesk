@@ -33,9 +33,9 @@ public class HelpDesk extends JavaPlugin {
                 }
                 if (openTickets > 0) {
                     if (openTickets == 1) {
-                        notifyAllWithPermission(HelpLevel.MOD, ChatColor.GOLD + "[HELPDESK] " + ChatColor.GRAY + "There is " + ChatColor.DARK_GREEN + "1 ticket open");
+                        notifyAllHelpdeskStaff(ChatColor.GOLD + "[HELPDESK] " + ChatColor.GRAY + "There is " + ChatColor.DARK_GREEN + "1 ticket open");
                     } else {
-                        notifyAllWithPermission(HelpLevel.MOD, ChatColor.GOLD + "[HELPDESK] " + ChatColor.GRAY + "There are " + ChatColor.DARK_GREEN + openTickets + " tickets open");
+                        notifyAllHelpdeskStaff(ChatColor.GOLD + "[HELPDESK] " + ChatColor.GRAY + "There are " + ChatColor.DARK_GREEN + openTickets + " tickets open");
                     }
                 }
             }
@@ -102,15 +102,15 @@ public class HelpDesk extends JavaPlugin {
         return false;
     }
 
-    public void notifyAllWithPermission(HelpLevel level, String message) {
+    public void notifyAllHelpdeskStaff(String message) {
         for (Player p : getServer().getOnlinePlayers()) {
-            if ((level == HelpLevel.MOD) && p.hasPermission("helpdesk.mod") || p.hasPermission("helpdesk.admin") || p.hasPermission("helpdesk.op")) {
-                p.sendMessage(message);
-            } else if ((level == HelpLevel.ADMIN) && p.hasPermission("helpdesk.admin") || p.hasPermission("helpdesk.op")) {
-                p.sendMessage(message);
-            } else if ((level == HelpLevel.OP) && p.hasPermission("helpdesk.op")) {
+            if (isHelpdeskStaff(p)) {
                 p.sendMessage(message);
             }
         }
     } 
+    
+    public boolean isHelpdeskStaff(Player player) {
+        return player.hasPermission("helpdesk.mod") || player.hasPermission("helpdesk.admin") || player.hasPermission("helpdesk.op");
+    }
 }

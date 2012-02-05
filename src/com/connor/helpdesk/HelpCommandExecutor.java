@@ -70,8 +70,7 @@ public class HelpCommandExecutor implements CommandExecutor {
 
     private boolean displayManual(Player player) {
         player.sendMessage(ChatColor.GRAY + "/ " + ChatColor.GOLD + "HelpDesk");
-        player.sendMessage(ChatColor.GRAY + "| " + ChatColor.YELLOW + "file <message>" + ChatColor.GRAY
-                            + ": Files a help ticket");
+        player.sendMessage(ChatColor.GRAY + "| " + ChatColor.YELLOW + "file <message>" + ChatColor.GRAY + ": Files a help ticket");
         
         if (player.hasPermission("helpdesk.mod") || player.hasPermission("helpdesk.admin") || player.hasPermission("helpdesk.op")) {
             player.sendMessage(ChatColor.GRAY + "| " + ChatColor.YELLOW + "list" + ChatColor.GRAY + ": Lists currently-open tickets");
@@ -96,13 +95,13 @@ public class HelpCommandExecutor implements CommandExecutor {
         
         StringBuilder contents = new StringBuilder().append(args[1]);
         for (int i = 2; i < args.length; i++) {
-            contents.append(" " + args[i]);
+            contents.append(" ").append(args[i]);
         }
         
         HelpTicket ticket = new HelpTicket(player.getName(), contents.toString());
         helpDeskInstance.addTicket(ticket);
         
-        helpDeskInstance.notifyAllWithPermission(HelpLevel.MOD, ChatColor.GOLD + "[HELPDESK] " + ChatColor.GRAY + "Ticket " + ChatColor.DARK_GREEN +  ticket.getID() + ChatColor.GRAY + " has been " + ChatColor.DARK_GREEN + "submitted by " + ticket.getUserFiled());
+        helpDeskInstance.notifyAllHelpdeskStaff(staffTicketMessage(ChatColor.DARK_GREEN, "submitted by " + ticket.getUserFiled(), ticket));
         player.sendMessage(ChatColor.GOLD + "[HELPDESK] " + ChatColor.GRAY + "Ticket submitted. Your ticket ID is " + ChatColor.DARK_GREEN + ticket.getID());
         
         return true;
@@ -119,7 +118,7 @@ public class HelpCommandExecutor implements CommandExecutor {
             return true;
         }
         
-        if (!(ticket.getUserFiled().equalsIgnoreCase(player.getName())) && !player.hasPermission("helpdesk.mod") && !player.hasPermission("helpdesk.admin") && !player.hasPermission("helpdesk.op"))
+        if (!(ticket.getUserFiled().equalsIgnoreCase(player.getName())) && !helpDeskInstance.isHelpdeskStaff(player))
             return true;
         
         if (ticket.isAssigned()) {
@@ -134,7 +133,7 @@ public class HelpCommandExecutor implements CommandExecutor {
         if (args.length < 2)
             return false;
 
-        if (!player.hasPermission("helpdesk.mod") && !player.hasPermission("helpdesk.admin") && !player.hasPermission("helpdesk.op"))
+        if (!helpDeskInstance.isHelpdeskStaff(player))
             return true;
         
         HelpTicket ticket = helpDeskInstance.getTicketWithID(args[1]);
@@ -150,11 +149,11 @@ public class HelpCommandExecutor implements CommandExecutor {
         }
         
         ticket.setAssignedUser(player.getName());
-        helpDeskInstance.notifyAllWithPermission(HelpLevel.MOD, ChatColor.GOLD + "[HELPDESK] " + ChatColor.GRAY + "Ticket " + ChatColor.DARK_GREEN + ticket.getID() + ChatColor.GRAY + " was " + ChatColor.DARK_GREEN + "assigned to " + ticket.getAssignedUser());
+        helpDeskInstance.notifyAllHelpdeskStaff(staffTicketMessage(ChatColor.DARK_GREEN, "assigned to " + ticket.getAssignedUser(), ticket));
         
         Player filed = helpDeskInstance.getServer().getPlayerExact(ticket.getUserFiled());
         if (filed != null) 
-            filed.sendMessage(ChatColor.GOLD + "[HELPDESK] " + ChatColor.GRAY + "Your ticket (" + ChatColor.DARK_GREEN + ticket.getID() + ChatColor.GRAY + ")" + " has been " + ChatColor.DARK_GREEN + "assigned to " + ticket.getAssignedUser());
+            filed.sendMessage(ticketWasMessage(ChatColor.DARK_GREEN, "assigned to " + ticket.getAssignedUser(), ticket));
         return true;
     }
 
@@ -162,7 +161,7 @@ public class HelpCommandExecutor implements CommandExecutor {
         if (args.length < 2)
             return false;
 
-        if (!player.hasPermission("helpdesk.mod") && !player.hasPermission("helpdesk.admin") && !player.hasPermission("helpdesk.op"))
+        if (!helpDeskInstance.isHelpdeskStaff(player))
             return true;
         
         HelpTicket ticket = helpDeskInstance.getTicketWithID(args[1]);
@@ -175,11 +174,10 @@ public class HelpCommandExecutor implements CommandExecutor {
         HelpLevel level = ticket.getLevel();
         ticket.elevate(player);
         if (level != ticket.getLevel()) {
-            player.sendMessage(ChatColor.GRAY + "Ticket elevated to " + ticket.getLevel());
-            helpDeskInstance.notifyAllWithPermission(HelpLevel.MOD, ChatColor.GOLD + "[HELPDESK] " + ChatColor.GRAY + "Ticket " + ChatColor.DARK_GREEN + ticket.getID() + ChatColor.GRAY + " was " + ChatColor.DARK_GREEN + "elevated to " + ticket.getLevel());
+            helpDeskInstance.notifyAllHelpdeskStaff(staffTicketMessage(ChatColor.DARK_GREEN, "elevated to " + ticket.getLevel(), ticket));
             Player filed = helpDeskInstance.getServer().getPlayerExact(ticket.getUserFiled());
             if (filed != null)
-                filed.sendMessage(ChatColor.GOLD + "[HELPDESK] " + ChatColor.GRAY + "Your ticket (" + ChatColor.DARK_GREEN + ticket.getID() + ChatColor.GRAY + ") was " + ChatColor.DARK_GREEN + "elevated to " + ticket.getLevel() + " by " + player.getName());
+                filed.sendMessage(ticketWasMessage(ChatColor.DARK_GREEN, "elevated to " + ticket.getLevel() + " by " + player.getName(), ticket));
         } else {
             player.sendMessage(ChatColor.GRAY + "Ticket couldn't be elevated");
         }
@@ -191,7 +189,7 @@ public class HelpCommandExecutor implements CommandExecutor {
         if (args.length < 2)
             return false;
 
-        if (!player.hasPermission("helpdesk.mod") && !player.hasPermission("helpdesk.admin") && !player.hasPermission("helpdesk.op"))
+        if (!helpDeskInstance.isHelpdeskStaff(player))
             return true;
 
         HelpTicket ticket = helpDeskInstance.getTicketWithID(args[1]);
@@ -202,10 +200,10 @@ public class HelpCommandExecutor implements CommandExecutor {
         }
 
         if (helpDeskInstance.removeTicket(ticket)) {
-            helpDeskInstance.notifyAllWithPermission(HelpLevel.MOD, ChatColor.GOLD + "[HELPDESK] " + ChatColor.GRAY + "Ticket " + ChatColor.DARK_GREEN + ticket.getID() + ChatColor.GRAY + " was " + ChatColor.DARK_GREEN + "removed by " + player.getName());
+            helpDeskInstance.notifyAllHelpdeskStaff(staffTicketMessage(ChatColor.DARK_GREEN, "removed by " + player.getName(), ticket));
             Player filed = helpDeskInstance.getServer().getPlayerExact(ticket.getUserFiled());
             if (filed != null)
-                filed.sendMessage(ChatColor.GOLD + "[HELPDESK] " + ChatColor.GRAY + "Your ticket (" + ChatColor.DARK_GREEN + ticket.getID() + ChatColor.GRAY + ") was " + ChatColor.RED + "removed by " + player.getName());
+                filed.sendMessage(ticketWasMessage(ChatColor.RED, "removed by " + player.getName(), ticket));
         }
 
         return true;
@@ -215,7 +213,7 @@ public class HelpCommandExecutor implements CommandExecutor {
         if (args.length < 2)
             return true;
 
-        if (!player.hasPermission("helpdesk.mod") && !player.hasPermission("helpdesk.admin") && !player.hasPermission("helpdesk.op"))
+        if (!helpDeskInstance.isHelpdeskStaff(player))
             return true;
 
         HelpTicket ticket = helpDeskInstance.getTicketWithID(args[1]);
@@ -227,10 +225,10 @@ public class HelpCommandExecutor implements CommandExecutor {
 
         ticket.setCompleted();
         if (helpDeskInstance.removeTicket(ticket)) {
-            helpDeskInstance.notifyAllWithPermission(HelpLevel.MOD, ChatColor.GOLD + "[HELPDESK] " + ChatColor.GRAY + "Ticket " + ChatColor.DARK_GREEN + ticket.getID() + ChatColor.GRAY + " was " + ChatColor.DARK_GREEN + "marked as complete by " + player.getName());
+            helpDeskInstance.notifyAllHelpdeskStaff(staffTicketMessage(ChatColor.DARK_GREEN, "marked as complete by " + player.getName(), ticket));
             Player filed = helpDeskInstance.getServer().getPlayerExact(ticket.getUserFiled());
             if (filed != null)
-                filed.sendMessage(ChatColor.GOLD + "[HELPDESK] " + ChatColor.GRAY + "Your ticket (" + ChatColor.DARK_GREEN + ticket.getID() + ChatColor.GRAY +  ") was " + ChatColor.DARK_GREEN + "marked as complete by " + player.getName());
+                filed.sendMessage(ticketWasMessage(ChatColor.DARK_GREEN, "marked as complete by " + player.getName(), ticket));
         }
 
         return true;
@@ -311,7 +309,7 @@ public class HelpCommandExecutor implements CommandExecutor {
             String assignedTag = "";
             
             if (tickets.get(i).isAssigned()) {
-                if (tickets.get(i).getAssignedUser() != player.getName()) {
+                if (!tickets.get(i).getAssignedUser().equals(player.getName())) {
                     continue;    
                 } else {
                     assignedTag = ChatColor.RED + "[ASSIGNED]";
@@ -335,18 +333,18 @@ public class HelpCommandExecutor implements CommandExecutor {
             return true;
         }
 
-        if (!(ticket.getUserFiled().equalsIgnoreCase(player.getName())) && !player.hasPermission("helpdesk.mod") && !player.hasPermission("helpdesk.admin") && !player.hasPermission("helpdesk.op"))
+        if (!(ticket.getUserFiled().equalsIgnoreCase(player.getName())) && !helpDeskInstance.isHelpdeskStaff(player))
             return true;
 
         if (!ticket.isUrgent()) {
             ticket.setUrgent(true);
-            helpDeskInstance.notifyAllWithPermission(HelpLevel.MOD, ChatColor.GOLD + "[HELPDESK] " + ChatColor.GRAY + "Ticket " + ChatColor.DARK_GREEN + ticket.getID() + ChatColor.GRAY + " was " + ChatColor.RED + "marked as URGENT by " + player.getName());
+            helpDeskInstance.notifyAllHelpdeskStaff(staffTicketMessage(ChatColor.RED, "marked as URGENT by " + player.getName(), ticket));
             Player filed = helpDeskInstance.getServer().getPlayerExact(ticket.getUserFiled());
             if (filed != null) {
                 if (player == filed) {
-                    filed.sendMessage(ChatColor.GOLD + "[HELPDESK] " + ChatColor.GRAY + "Your ticket (" + ChatColor.DARK_GREEN + ticket.getID() + ChatColor.GRAY + ") was " + ChatColor.DARK_GREEN + "marked as URGENT");
+                    filed.sendMessage(ticketWasMessage(ChatColor.DARK_GREEN, "marked as URGENT", ticket));
                 } else {
-                    filed.sendMessage(ChatColor.GOLD + "[HELPDESK] " + ChatColor.GRAY + "Your ticket (" + ChatColor.DARK_GREEN + ticket.getID() + ChatColor.GRAY + ") was " + ChatColor.DARK_GREEN + "marked as URGENT by " + player.getName());
+                    filed.sendMessage(ticketWasMessage(ChatColor.DARK_GREEN, "marked as URGENT by " + player.getName(), ticket));
                 }
             }
         }
@@ -365,22 +363,30 @@ public class HelpCommandExecutor implements CommandExecutor {
             return true;
         }
 
-        if (!(ticket.getUserFiled().equalsIgnoreCase(player.getName())) && !player.hasPermission("helpdesk.mod") && !player.hasPermission("helpdesk.admin") && !player.hasPermission("helpdesk.op"))
+        if (!(ticket.getUserFiled().equalsIgnoreCase(player.getName())) && !helpDeskInstance.isHelpdeskStaff(player))
             return true;
 
         if (ticket.isUrgent()) {
             ticket.setUrgent(false);
-            helpDeskInstance.notifyAllWithPermission(HelpLevel.MOD, ChatColor.GOLD + "[HELPDESK] " + ChatColor.GRAY + "Ticket " + ChatColor.DARK_GREEN + ticket.getID() + ChatColor.GRAY + " was " + ChatColor.DARK_GREEN + "marked as NORMAL by " + player.getName());
+            helpDeskInstance.notifyAllHelpdeskStaff(staffTicketMessage(ChatColor.DARK_GREEN, "marked as NORMAL by " + player.getName(), ticket));
             Player filed = helpDeskInstance.getServer().getPlayerExact(ticket.getUserFiled());
             if (filed != null) {
                 if (player == filed) {
-                    filed.sendMessage(ChatColor.GOLD + "[HELPDESK] " + ChatColor.GRAY + "Your ticket (" + ChatColor.DARK_GREEN + ticket.getID() + ChatColor.GRAY + ") was " + ChatColor.DARK_GREEN + "marked as NORMAL");
+                    filed.sendMessage(ticketWasMessage(ChatColor.DARK_GREEN, "marked as NORMAL", ticket));
                 } else {
-                    filed.sendMessage(ChatColor.GOLD + "[HELPDESK] " + ChatColor.GRAY + "Your ticket (" + ChatColor.DARK_GREEN + ticket.getID() + ChatColor.GRAY + ") was " + ChatColor.DARK_GREEN + "marked as NORMAL by " + player.getName());
+                    filed.sendMessage(ticketWasMessage(ChatColor.DARK_GREEN, "marked as NORMAL by " + player.getName(), ticket));
                 }
             }
         }
 
         return true;
+    }
+    
+    public String ticketWasMessage(ChatColor eventColor, String eventText, HelpTicket ticket) {
+        return ChatColor.GOLD + "[HELPDESK] " + ChatColor.GRAY + "Your ticket (" + ChatColor.DARK_GREEN + ticket.getID() + ChatColor.GRAY + ") was " + eventColor + eventText;
+    }
+    
+    public String staffTicketMessage(ChatColor eventColor, String eventText, HelpTicket ticket) {
+        return ChatColor.GOLD + "[HELPDESK] " + ChatColor.GRAY + "Ticket " + ChatColor.DARK_GREEN + ticket.getID() + ChatColor.GRAY + " was " + eventColor + eventText; 
     }
 }
