@@ -67,21 +67,14 @@ public class HelpCommandExecutor implements CommandExecutor {
                             + ": Files a help ticket");
         
         if (player.hasPermission("helpdesk.mod") || player.hasPermission("helpdesk.admin") || player.hasPermission("helpdesk.op")) {
-            player.sendMessage(ChatColor.GRAY + "| " + ChatColor.YELLOW + "list" + ChatColor.GRAY
-                    + ": Lists currently-open tickets");
-            player.sendMessage(ChatColor.GRAY + "| " + ChatColor.YELLOW + "read <ID>" + ChatColor.GRAY
-                    + ": Reads the contents of a help ticket");
-            player.sendMessage(ChatColor.GRAY + "| " + ChatColor.YELLOW + "assign <ID>" + ChatColor.GRAY
-                    + ": Assigns you to the ticket");
-            player.sendMessage(ChatColor.GRAY + "| " + ChatColor.YELLOW + "elevate <ID>" + ChatColor.GRAY
-                    + ": Elevates the ticket level to ADMIN or OP");
-            player.sendMessage(ChatColor.GRAY + "| " + ChatColor.YELLOW + "complete <ID>" + ChatColor.GRAY
-                    + ": Marks the ticket as complete");
-            player.sendMessage(ChatColor.GRAY + "| " + ChatColor.YELLOW + "remove <ID>" + ChatColor.GRAY
-                    + ": Removes the ticket");
+            player.sendMessage(ChatColor.GRAY + "| " + ChatColor.YELLOW + "list" + ChatColor.GRAY + ": Lists currently-open tickets");
+            player.sendMessage(ChatColor.GRAY + "| " + ChatColor.YELLOW + "read <ID>" + ChatColor.GRAY + ": Reads the contents of a help ticket");
+            player.sendMessage(ChatColor.GRAY + "| " + ChatColor.YELLOW + "assign <ID>" + ChatColor.GRAY + ": Assigns you to the ticket");
+            player.sendMessage(ChatColor.GRAY + "| " + ChatColor.YELLOW + "elevate <ID>" + ChatColor.GRAY + ": Elevates the ticket level to ADMIN or OP");
+            player.sendMessage(ChatColor.GRAY + "| " + ChatColor.YELLOW + "complete <ID>" + ChatColor.GRAY + ": Marks the ticket as complete");
+            player.sendMessage(ChatColor.GRAY + "| " + ChatColor.YELLOW + "remove <ID>" + ChatColor.GRAY + ": Removes the ticket");
         } else {
-            player.sendMessage(ChatColor.GRAY + "| " + ChatColor.YELLOW + "read <ID>" + ChatColor.GRAY
-                    + ": Reads a help ticket");
+            player.sendMessage(ChatColor.GRAY + "| " + ChatColor.YELLOW + "read <ID>" + ChatColor.GRAY + ": Reads a help ticket");
         }
         return false;
     }
@@ -121,8 +114,7 @@ public class HelpCommandExecutor implements CommandExecutor {
         if (ticket.isAssigned()) {
             player.sendMessage(ChatColor.GRAY + "Ticket assigned to " + ticket.getAssignedUser() + ":");
         }
-        player.sendMessage(ChatColor.DARK_GREEN + "Ticket " + ticket.getID() + ChatColor.GRAY + " (" + ticket.getUserFiled() + "): "
-                + ChatColor.WHITE + ticket.getContents());
+        player.sendMessage(ChatColor.DARK_GREEN + "Ticket " + ticket.getID() + ChatColor.GRAY + " (" + ticket.getUserFiled() + "): " + ChatColor.WHITE + ticket.getContents());
         
         return true;
     }
@@ -152,8 +144,7 @@ public class HelpCommandExecutor implements CommandExecutor {
         
         Player filed = Bukkit.getServer().getPlayerExact(ticket.getUserFiled());
         if (filed != null) 
-            filed.sendMessage(ChatColor.GRAY + "Your ticket (" + ChatColor.DARK_GREEN + ticket.getID()
-                    + ChatColor.GRAY + ")" + " has been " + ChatColor.DARK_GREEN + "assigned to " + ticket.getAssignedUser());
+            filed.sendMessage(ChatColor.GRAY + "Your ticket (" + ChatColor.DARK_GREEN + ticket.getID() + ChatColor.GRAY + ")" + " has been " + ChatColor.DARK_GREEN + "assigned to " + ticket.getAssignedUser());
         return true;
     }
 
@@ -178,8 +169,7 @@ public class HelpCommandExecutor implements CommandExecutor {
             helpDeskInstance.notifyAllWithPermission(HelpLevel.MOD, ChatColor.GOLD + "[HELPDESK] " + ChatColor.GRAY + "Ticket " + ChatColor.DARK_GREEN + ticket.getID() + ChatColor.GRAY + " was " + ChatColor.DARK_GREEN + "elevated to " + ticket.getLevel());
             Player filed = Bukkit.getServer().getPlayerExact(ticket.getUserFiled());
             if (filed != null)
-                filed.sendMessage(ChatColor.GRAY + "Your ticket (" + ChatColor.DARK_GREEN + ticket.getID() + ChatColor.GRAY + ") was " + ChatColor.DARK_GREEN + "elevated to " + ticket.getLevel()
-                        + " by " + player.getName());
+                filed.sendMessage(ChatColor.GRAY + "Your ticket (" + ChatColor.DARK_GREEN + ticket.getID() + ChatColor.GRAY + ") was " + ChatColor.DARK_GREEN + "elevated to " + ticket.getLevel() + " by " + player.getName());
         } else {
             player.sendMessage(ChatColor.GRAY + "Ticket couldn't be elevated");
         }
@@ -205,8 +195,7 @@ public class HelpCommandExecutor implements CommandExecutor {
             player.sendMessage(ChatColor.GRAY + "Removed Ticket " + ticket.getID());
             Player filed = Bukkit.getServer().getPlayerExact(ticket.getUserFiled());
             if (filed != null)
-                filed.sendMessage(ChatColor.GRAY + "Your ticket (" + ChatColor.DARK_GREEN + ticket.getID() + ChatColor.GRAY + ") was "
-                        + ChatColor.RED + "removed by " + player.getName());
+                filed.sendMessage(ChatColor.GRAY + "Your ticket (" + ChatColor.DARK_GREEN + ticket.getID() + ChatColor.GRAY + ") was " + ChatColor.RED + "removed by " + player.getName());
         }
 
         return true;
@@ -231,8 +220,7 @@ public class HelpCommandExecutor implements CommandExecutor {
             player.sendMessage(ChatColor.GRAY + "Marked Ticket " + ticket.getID() + " as complete");
             Player filed = Bukkit.getServer().getPlayerExact(ticket.getUserFiled());
             if (filed != null)
-                filed.sendMessage(ChatColor.GRAY + "Your ticket (" + ChatColor.DARK_GREEN + ticket.getID() + ChatColor.GRAY +  ") was "
-                        + ChatColor.DARK_GREEN + "marked as complete by " + player.getName());
+                filed.sendMessage(ChatColor.GRAY + "Your ticket (" + ChatColor.DARK_GREEN + ticket.getID() + ChatColor.GRAY +  ") was " + ChatColor.DARK_GREEN + "marked as complete by " + player.getName());
         }
 
         return true;
@@ -296,10 +284,7 @@ public class HelpCommandExecutor implements CommandExecutor {
             if (tickets.get(i).isAssigned())
                 continue;
             
-            player.sendMessage(ChatColor.GRAY + "| "
-                    + ChatColor.GOLD + "[" + tickets.get(i).getLevel() + "]"
-                    + ChatColor.DARK_GREEN + "Ticket " + tickets.get(i).getID() + ChatColor.GRAY + " by "
-                    + ChatColor.DARK_GREEN + tickets.get(i).getUserFiled() + ChatColor.WHITE + ": " + tickets.get(i).getContents());
+            player.sendMessage(ChatColor.GRAY + "| " + ChatColor.GOLD + "[" + tickets.get(i).getLevel() + "]" + ChatColor.DARK_GREEN + "Ticket " + tickets.get(i).getID() + ChatColor.GRAY + " by " + ChatColor.DARK_GREEN + tickets.get(i).getUserFiled() + ChatColor.WHITE + ": " + tickets.get(i).getContents());
         }
         return true;
     }
