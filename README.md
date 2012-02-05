@@ -5,6 +5,14 @@ This is a simple Bukkit plugin designed to allow three levels of users (Mods, Ad
 
 The reason for making this is apparent as soon as you get a high rank on a server with a reasonably-high population. Too many people often need help at once, and some are often left waiting indefinitely.
 
+Each HelpTicket added to HelpDesk has a handler level. For example, if a Mod doesn't have the ability to handle a given ticket, they can use `/helpdesk elevate <ID>` to remove the ticket from their queue, and mark the ticket as something that an Admin has to handle.
+
+Each HelpTicket also has an urgency flag. If at any time the person filing the Ticket or a staff member thinks a flag is urgent, they can use `/helpdesk urgent <ID>`. If the person filing the ticket or the staff member doesn't think it's urgent, they can use `/helpdesk noturgent` to change its priority to normal.
+
+If a staff member wants to accept responsibility for a ticket, they can use `/helpdesk assign <ID>` and it'll be removed from the active queue.
+
+When a HelpTicket has been filled, a staff member can use `/helpdesk complete <ID>` to mark the ticket as completed. If the ticket should be removed without completion, the staff member should use `/helpdesk remove <ID>`.
+
 Setting up HelpDesk
 -------------------
 
@@ -19,7 +27,7 @@ It is not required for Admins to have helpdesk.mod, etc.
 Usage
 -----
 
-HelpDesk operates under the /helpdesk and /ticket commands, and they operate completely identically.
+HelpDesk operates under the `/helpdesk` and `/ticket` commands, and they operate completely identically.
 
 **Commands for Normal Players:**
 
