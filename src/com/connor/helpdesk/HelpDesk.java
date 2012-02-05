@@ -1,6 +1,5 @@
 package com.connor.helpdesk;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -104,7 +103,7 @@ public class HelpDesk extends JavaPlugin {
     }
 
     public void notifyAllWithPermission(HelpLevel level, String message) {
-        for (Player p : Bukkit.getServer().getOnlinePlayers()) {
+        for (Player p : getServer().getOnlinePlayers()) {
             if ((level == HelpLevel.MOD) && p.hasPermission("helpdesk.mod") || p.hasPermission("helpdesk.admin") || p.hasPermission("helpdesk.op")) {
                 p.sendMessage(message);
             } else if ((level == HelpLevel.ADMIN) && p.hasPermission("helpdesk.admin") || p.hasPermission("helpdesk.op")) {

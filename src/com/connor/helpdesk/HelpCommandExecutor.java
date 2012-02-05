@@ -1,6 +1,5 @@
 package com.connor.helpdesk;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -154,7 +153,7 @@ public class HelpCommandExecutor implements CommandExecutor {
         helpDeskInstance.notifyAllWithPermission(HelpLevel.MOD, ChatColor.GOLD + "[HELPDESK] " + ChatColor.GRAY + "Ticket " + ChatColor.DARK_GREEN + ticket.getID() + ChatColor.GRAY + " was " + ChatColor.DARK_GREEN + "assigned to " + ticket.getAssignedUser());
         player.sendMessage(ChatColor.GRAY + "You have been assigned to Ticket " + ticket.getID());
         
-        Player filed = Bukkit.getServer().getPlayerExact(ticket.getUserFiled());
+        Player filed = helpDeskInstance.getServer().getPlayerExact(ticket.getUserFiled());
         if (filed != null) 
             filed.sendMessage(ChatColor.GRAY + "Your ticket (" + ChatColor.DARK_GREEN + ticket.getID() + ChatColor.GRAY + ")" + " has been " + ChatColor.DARK_GREEN + "assigned to " + ticket.getAssignedUser());
         return true;
@@ -179,7 +178,7 @@ public class HelpCommandExecutor implements CommandExecutor {
         if (level != ticket.getLevel()) {
             player.sendMessage(ChatColor.GRAY + "Ticket elevated to " + ticket.getLevel());
             helpDeskInstance.notifyAllWithPermission(HelpLevel.MOD, ChatColor.GOLD + "[HELPDESK] " + ChatColor.GRAY + "Ticket " + ChatColor.DARK_GREEN + ticket.getID() + ChatColor.GRAY + " was " + ChatColor.DARK_GREEN + "elevated to " + ticket.getLevel());
-            Player filed = Bukkit.getServer().getPlayerExact(ticket.getUserFiled());
+            Player filed = helpDeskInstance.getServer().getPlayerExact(ticket.getUserFiled());
             if (filed != null)
                 filed.sendMessage(ChatColor.GRAY + "Your ticket (" + ChatColor.DARK_GREEN + ticket.getID() + ChatColor.GRAY + ") was " + ChatColor.DARK_GREEN + "elevated to " + ticket.getLevel() + " by " + player.getName());
         } else {
@@ -205,7 +204,7 @@ public class HelpCommandExecutor implements CommandExecutor {
 
         if (helpDeskInstance.removeTicket(ticket)) {
             player.sendMessage(ChatColor.GRAY + "Removed Ticket " + ticket.getID());
-            Player filed = Bukkit.getServer().getPlayerExact(ticket.getUserFiled());
+            Player filed = helpDeskInstance.getServer().getPlayerExact(ticket.getUserFiled());
             if (filed != null)
                 filed.sendMessage(ChatColor.GRAY + "Your ticket (" + ChatColor.DARK_GREEN + ticket.getID() + ChatColor.GRAY + ") was " + ChatColor.RED + "removed by " + player.getName());
         }
@@ -230,7 +229,7 @@ public class HelpCommandExecutor implements CommandExecutor {
         ticket.setCompleted();
         if (helpDeskInstance.removeTicket(ticket)) {
             player.sendMessage(ChatColor.GRAY + "Marked Ticket " + ticket.getID() + " as complete");
-            Player filed = Bukkit.getServer().getPlayerExact(ticket.getUserFiled());
+            Player filed = helpDeskInstance.getServer().getPlayerExact(ticket.getUserFiled());
             if (filed != null)
                 filed.sendMessage(ChatColor.GRAY + "Your ticket (" + ChatColor.DARK_GREEN + ticket.getID() + ChatColor.GRAY +  ") was " + ChatColor.DARK_GREEN + "marked as complete by " + player.getName());
         }
@@ -336,7 +335,7 @@ public class HelpCommandExecutor implements CommandExecutor {
         if (!ticket.isUrgent()) {
             ticket.setUrgent(true);
             helpDeskInstance.notifyAllWithPermission(HelpLevel.MOD, ChatColor.GOLD + "[HELPDESK] " + ChatColor.GRAY + "Ticket " + ChatColor.DARK_GREEN + ticket.getID() + ChatColor.GRAY + " was " + ChatColor.RED + "marked as URGENT by " + player.getName());
-            Player filed = Bukkit.getServer().getPlayerExact(ticket.getUserFiled());
+            Player filed = helpDeskInstance.getServer().getPlayerExact(ticket.getUserFiled());
             if (filed != null) {
                 if (player == filed) {
                     filed.sendMessage(ChatColor.GRAY + "Your ticket (" + ChatColor.DARK_GREEN + ticket.getID() + ChatColor.GRAY + ") was " + ChatColor.DARK_GREEN + "marked as URGENT");
@@ -366,7 +365,7 @@ public class HelpCommandExecutor implements CommandExecutor {
         if (ticket.isUrgent()) {
             ticket.setUrgent(false);
             helpDeskInstance.notifyAllWithPermission(HelpLevel.MOD, ChatColor.GOLD + "[HELPDESK] " + ChatColor.GRAY + "Ticket " + ChatColor.DARK_GREEN + ticket.getID() + ChatColor.GRAY + " was " + ChatColor.DARK_GREEN + "marked as NORMAL by " + player.getName());
-            Player filed = Bukkit.getServer().getPlayerExact(ticket.getUserFiled());
+            Player filed = helpDeskInstance.getServer().getPlayerExact(ticket.getUserFiled());
             if (filed != null) {
                 if (player == filed) {
                     filed.sendMessage(ChatColor.GRAY + "Your ticket (" + ChatColor.DARK_GREEN + ticket.getID() + ChatColor.GRAY + ") was " + ChatColor.DARK_GREEN + "marked as NORMAL");
