@@ -46,6 +46,7 @@ public class HelpDesk extends JavaPlugin {
     }
 
     public void onDisable() {
+        getServer().broadcastMessage(ChatColor.GOLD + "[HELPDESK] " + ChatColor.RED + "Tickets cleared");
         log.info("HelpDesk disabled");
     }
 
