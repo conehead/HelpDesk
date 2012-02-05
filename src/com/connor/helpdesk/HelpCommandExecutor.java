@@ -70,7 +70,7 @@ public class HelpCommandExecutor implements CommandExecutor {
 
     private boolean displayManual(Player player) {
         player.sendMessage(ChatColor.GRAY + "/ " + ChatColor.GOLD + "HelpDesk");
-        player.sendMessage(ChatColor.GRAY + "| " + ChatColor.YELLOW + "file <message>" + ChatColor.GRAY + ": Files a help ticket");
+        player.sendMessage(ChatColor.GRAY + "| " + ChatColor.YELLOW + "file/create <message>" + ChatColor.GRAY + ": Creates a help ticket");
         
         if (player.hasPermission("helpdesk.mod") || player.hasPermission("helpdesk.admin") || player.hasPermission("helpdesk.op")) {
             player.sendMessage(ChatColor.GRAY + "| " + ChatColor.YELLOW + "list" + ChatColor.GRAY + ": Lists currently-open tickets");
