@@ -57,11 +57,19 @@ public class HelpCommandExecutor implements CommandExecutor {
         if (args[0].equalsIgnoreCase("complete")) {
             return completeTicket(player, args);
         }
+        
+        if (args[0].equalsIgnoreCase("promote") || args[0].equalsIgnoreCase("urgent")) {
+            return markTicketUrgent(player, args);
+        }
+        
+        if (args[0].equalsIgnoreCase("demote") || args[0].equalsIgnoreCase("noturgent")) {
+            return markTicketNormal(player, args);
+        }
 
         return false;
     }
 
-    public boolean displayManual(Player player) {
+    private boolean displayManual(Player player) {
         player.sendMessage(ChatColor.GRAY + "/ " + ChatColor.GOLD + "HelpDesk");
         player.sendMessage(ChatColor.GRAY + "| " + ChatColor.YELLOW + "file <message>" + ChatColor.GRAY
                             + ": Files a help ticket");
@@ -71,15 +79,19 @@ public class HelpCommandExecutor implements CommandExecutor {
             player.sendMessage(ChatColor.GRAY + "| " + ChatColor.YELLOW + "read <ID>" + ChatColor.GRAY + ": Reads the contents of a help ticket");
             player.sendMessage(ChatColor.GRAY + "| " + ChatColor.YELLOW + "assign <ID>" + ChatColor.GRAY + ": Assigns you to the ticket");
             player.sendMessage(ChatColor.GRAY + "| " + ChatColor.YELLOW + "elevate <ID>" + ChatColor.GRAY + ": Elevates the ticket level to ADMIN or OP");
+            player.sendMessage(ChatColor.GRAY + "| " + ChatColor.YELLOW + "urgent <ID>" + ChatColor.GRAY + ": Marks a ticket as urgent");
+            player.sendMessage(ChatColor.GRAY + "| " + ChatColor.YELLOW + "noturgent <ID>" + ChatColor.GRAY + ": Marks a ticket as normal");
             player.sendMessage(ChatColor.GRAY + "| " + ChatColor.YELLOW + "complete <ID>" + ChatColor.GRAY + ": Marks the ticket as complete");
             player.sendMessage(ChatColor.GRAY + "| " + ChatColor.YELLOW + "remove <ID>" + ChatColor.GRAY + ": Removes the ticket");
         } else {
             player.sendMessage(ChatColor.GRAY + "| " + ChatColor.YELLOW + "read <ID>" + ChatColor.GRAY + ": Reads a help ticket");
+            player.sendMessage(ChatColor.GRAY + "| " + ChatColor.YELLOW + "urgent <ID>" + ChatColor.GRAY + ": Marks a ticket as urgent");
+            player.sendMessage(ChatColor.GRAY + "| " + ChatColor.YELLOW + "noturgent <ID>" + ChatColor.GRAY + ": Marks a ticket as normal");
         }
         return false;
     }
     
-    public boolean createTicket(Player player, String[] args) {
+    private boolean createTicket(Player player, String[] args) {
         if (args.length < 2)
             return false;
         
@@ -97,7 +109,7 @@ public class HelpCommandExecutor implements CommandExecutor {
         return true;
     }
     
-    public boolean readTicket(Player player, String[] args) {
+    private boolean readTicket(Player player, String[] args) {
         if (args.length < 2) 
             return true;
 
@@ -119,7 +131,7 @@ public class HelpCommandExecutor implements CommandExecutor {
         return true;
     }
     
-    public boolean assignTicket(Player player, String[] args) {
+    private boolean assignTicket(Player player, String[] args) {
         if (args.length < 2)
             return false;
 
@@ -271,6 +283,23 @@ public class HelpCommandExecutor implements CommandExecutor {
             });
         }
         
+        Collections.sort(tickets, new Comparator<HelpTicket>() {
+            public int compare(HelpTicket o1, HelpTicket o2) {
+                if (o1.isUrgent() && !o2.isUrgent()) {
+                    return -1;
+                } else if (o2.isUrgent() && !o1.isUrgent()) {
+                    return 1;
+                } else if (o1.isUrgent() && o2.isUrgent()) {
+                    if (o1.getID() < o2.getID()) {
+                        return -1;
+                    } else {
+                        return 1;
+                    }
+                }
+                return 0;
+            }
+        });
+        
         player.sendMessage(ChatColor.GRAY + "/ Filed Tickets");
         for (int i = 0; i < 8; i++) {
             if (tickets.size() <= i)
@@ -284,8 +313,69 @@ public class HelpCommandExecutor implements CommandExecutor {
             if (tickets.get(i).isAssigned())
                 continue;
             
-            player.sendMessage(ChatColor.GRAY + "| " + ChatColor.GOLD + "[" + tickets.get(i).getLevel() + "]" + ChatColor.DARK_GREEN + "Ticket " + tickets.get(i).getID() + ChatColor.GRAY + " by " + ChatColor.DARK_GREEN + tickets.get(i).getUserFiled() + ChatColor.WHITE + ": " + tickets.get(i).getContents());
+            String urgentTag = tickets.get(i).isUrgent() ? ChatColor.RED + "[!]" : "";
+            player.sendMessage(ChatColor.GRAY + "| " + urgentTag + ChatColor.GOLD + "[" + tickets.get(i).getLevel() + "]" + ChatColor.DARK_GREEN + "Ticket " + tickets.get(i).getID() + ChatColor.GRAY + " by " + ChatColor.DARK_GREEN + tickets.get(i).getUserFiled() + ChatColor.WHITE + ": " + tickets.get(i).getContents());
         }
+        return true;
+    }
+
+    private boolean markTicketUrgent(Player player, String[] args) {
+        if (args.length < 2)
+            return false;
+
+        HelpTicket ticket = helpDeskInstance.getTicketWithID(args[1]);
+
+        if (ticket == null) {
+            player.sendMessage(ChatColor.GRAY + "Invalid ticket ID");
+            return true;
+        }
+
+        if (!(ticket.getUserFiled().equalsIgnoreCase(player.getName())) && !player.hasPermission("helpdesk.mod") && !player.hasPermission("helpdesk.admin") && !player.hasPermission("helpdesk.op"))
+            return true;
+
+        if (!ticket.isUrgent()) {
+            ticket.setUrgent(true);
+            helpDeskInstance.notifyAllWithPermission(HelpLevel.MOD, ChatColor.GOLD + "[HELPDESK] " + ChatColor.GRAY + "Ticket " + ChatColor.DARK_GREEN + ticket.getID() + ChatColor.GRAY + " was " + ChatColor.RED + "marked as URGENT by " + player.getName());
+            Player filed = Bukkit.getServer().getPlayerExact(ticket.getUserFiled());
+            if (filed != null) {
+                if (player == filed) {
+                    filed.sendMessage(ChatColor.GRAY + "Your ticket (" + ChatColor.DARK_GREEN + ticket.getID() + ChatColor.GRAY + ") was " + ChatColor.DARK_GREEN + "marked as URGENT");
+                } else {
+                    filed.sendMessage(ChatColor.GRAY + "Your ticket (" + ChatColor.DARK_GREEN + ticket.getID() + ChatColor.GRAY + ") was " + ChatColor.DARK_GREEN + "marked as URGENT by " + player.getName());
+                }
+            }
+        }
+
+        return true;
+    }
+
+    private boolean markTicketNormal(Player player, String[] args) {
+        if (args.length < 2)
+            return false;
+
+        HelpTicket ticket = helpDeskInstance.getTicketWithID(args[1]);
+
+        if (ticket == null) {
+            player.sendMessage(ChatColor.GRAY + "Invalid ticket ID");
+            return true;
+        }
+
+        if (!(ticket.getUserFiled().equalsIgnoreCase(player.getName())) && !player.hasPermission("helpdesk.mod") && !player.hasPermission("helpdesk.admin") && !player.hasPermission("helpdesk.op"))
+            return true;
+
+        if (ticket.isUrgent()) {
+            ticket.setUrgent(false);
+            helpDeskInstance.notifyAllWithPermission(HelpLevel.MOD, ChatColor.GOLD + "[HELPDESK] " + ChatColor.GRAY + "Ticket " + ChatColor.DARK_GREEN + ticket.getID() + ChatColor.GRAY + " was " + ChatColor.DARK_GREEN + "marked as NORMAL by " + player.getName());
+            Player filed = Bukkit.getServer().getPlayerExact(ticket.getUserFiled());
+            if (filed != null) {
+                if (player == filed) {
+                    filed.sendMessage(ChatColor.GRAY + "Your ticket (" + ChatColor.DARK_GREEN + ticket.getID() + ChatColor.GRAY + ") was " + ChatColor.DARK_GREEN + "marked as NORMAL");
+                } else {
+                    filed.sendMessage(ChatColor.GRAY + "Your ticket (" + ChatColor.DARK_GREEN + ticket.getID() + ChatColor.GRAY + ") was " + ChatColor.DARK_GREEN + "marked as NORMAL by " + player.getName());
+                }
+            }
+        }
+
         return true;
     }
 }

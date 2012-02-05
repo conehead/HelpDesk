@@ -14,6 +14,7 @@ public class HelpTicket {
     private boolean assigned = false;
     private String assignedUser = null;
     private boolean completed = false;
+    private boolean urgent = false;
     
     public HelpTicket(String userFiled, String contents) {
         this.userFiled = userFiled;
@@ -74,5 +75,13 @@ public class HelpTicket {
 
     public void setCompleted() {
         completed = true;
+    }
+
+    public boolean isUrgent() {
+        return urgent;
+    }
+
+    public void setUrgent(boolean urgent) {
+        this.urgent = urgent;
     }
 }
