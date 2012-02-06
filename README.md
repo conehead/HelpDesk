@@ -1,5 +1,6 @@
 HelpDesk
 ========
+HelpDesk is covered by the [Creative Commons Share-Alike License](http://creativecommons.org/licenses/by-sa/3.0/)
 
 This is a simple Bukkit plugin designed to allow three levels of users (Mods, Admins, and OPs) to handle help requests.
 
