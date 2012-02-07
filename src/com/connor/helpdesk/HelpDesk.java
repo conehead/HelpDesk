@@ -123,11 +123,6 @@ public class HelpDesk extends JavaPlugin {
         }
     }
 
-    public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
-        System.out.println("lawlawlawl");
-        return false;
-    }
-
     public void sendMessageToStaffLevel(HelpLevel level, String message) {
         for (Player p : getServer().getOnlinePlayers()) {
             if (level == HelpLevel.MOD) {
