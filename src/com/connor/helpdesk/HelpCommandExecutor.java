@@ -301,7 +301,7 @@ public class HelpCommandExecutor implements CommandExecutor {
             if (tickets.size() <= i)
                 break;
             
-            if (tickets.get(i).getLevel() == HelpLevel.ADMIN && !player.hasPermission("helpdesk.admin"))
+          if (tickets.get(i).getLevel() == HelpLevel.ADMIN && !player.hasPermission("helpdesk.admin") && !player.hasPermission("helpdesk.op"))
                 continue;
             else if (tickets.get(i).getLevel() == HelpLevel.OP && !player.hasPermission("helpdesk.op"))
                 continue;
