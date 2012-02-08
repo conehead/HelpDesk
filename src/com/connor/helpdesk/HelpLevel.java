@@ -20,7 +20,7 @@ public enum HelpLevel {
             return MOD;
         } else if (player.hasPermission("helpdesk.admin")) {
             return ADMIN;
-        } else if (player.hasPermission("helpdesk.admin")) {
+        } else if (player.hasPermission("helpdesk.op")) {
             return OP;
         }
         return null;
