@@ -7,8 +7,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 
 public class HelpCommandExecutor implements CommandExecutor {
 
@@ -240,82 +238,28 @@ public class HelpCommandExecutor implements CommandExecutor {
                 && !player.hasPermission("helpdesk.op"))
             return true;
         
-        ArrayList<HelpTicket> tickets = helpDeskInstance.sortTicketsByTime();
-        
-        if (player.hasPermission("helpdesk.admin")) {
-            Collections.sort(tickets, new Comparator<HelpTicket>() {
-                public int compare(HelpTicket o1, HelpTicket o2) {
-                    if (o1.getLevel() == HelpLevel.ADMIN && o2.getLevel() != HelpLevel.ADMIN) {
-                        return -1;
-                    } else if (o2.getLevel() == HelpLevel.ADMIN && o1.getLevel() != HelpLevel.ADMIN) {
-                        return 1;
-                    } else if (o1.getLevel() == HelpLevel.ADMIN && o2.getLevel() == HelpLevel.ADMIN) {
-                        if (o1.getID() < o2.getID()) {
-                            return -1;
-                        } else {
-                            return 1;
-                        }
-                    }
-                    return 0;
-                }
-            });
-        }
-        if (player.hasPermission("helpdesk.op")) {
-            Collections.sort(tickets, new Comparator<HelpTicket>() {
-                public int compare(HelpTicket o1, HelpTicket o2) {
-                    if (o1.getLevel() == HelpLevel.OP && o2.getLevel() != HelpLevel.OP) {
-                        return -1;
-                    } else if (o2.getLevel() == HelpLevel.OP && o1.getLevel() != HelpLevel.OP) {
-                        return 1;
-                    } else if (o1.getLevel() == HelpLevel.OP && o2.getLevel() == HelpLevel.OP) {
-                        if (o1.getID() < o2.getID()) {
-                            return -1;
-                        } else {
-                            return 1;
-                        }
-                    }
-                    return 0;
-                }
-            });
-        }
-        
-        Collections.sort(tickets, new Comparator<HelpTicket>() {
-            public int compare(HelpTicket o1, HelpTicket o2) {
-                if (o1.isUrgent() && !o2.isUrgent()) {
-                    return -1;
-                } else if (o2.isUrgent() && !o1.isUrgent()) {
-                    return 1;
-                } else if (o1.isUrgent() && o2.isUrgent()) {
-                    if (o1.getID() < o2.getID()) {
-                        return -1;
-                    } else {
-                        return 1;
-                    }
-                }
-                return 0;
-            }
-        });
-        
+        ArrayList<HelpTicket> tickets = helpDeskInstance.sortTickets();
+
         player.sendMessage(ChatColor.GRAY + "/ Filed Tickets");
         for (int i = 0; i < 8; i++) {
             if (tickets.size() <= i)
                 break;
-            
-          if (tickets.get(i).getLevel() == HelpLevel.ADMIN && !player.hasPermission("helpdesk.admin") && !player.hasPermission("helpdesk.op"))
+
+            if (tickets.get(i).getLevel() == HelpLevel.ADMIN && HelpLevel.getPlayerHelpLevelInt(player) < HelpLevel.ADMIN.toInt())
                 continue;
-            else if (tickets.get(i).getLevel() == HelpLevel.OP && !player.hasPermission("helpdesk.op"))
+            else if (tickets.get(i).getLevel() == HelpLevel.OP && HelpLevel.getPlayerHelpLevelInt(player) < HelpLevel.OP.toInt())
                 continue;
-            
+
             String assignedTag = "";
-            
+
             if (tickets.get(i).isAssigned()) {
                 if (!tickets.get(i).getAssignedUser().equals(player.getName())) {
-                    continue;    
+                    continue;
                 } else {
                     assignedTag = ChatColor.RED + "[ASSIGNED]";
                 }
             }
-            
+
             String urgentTag = tickets.get(i).isUrgent() ? ChatColor.RED + "[!]" : "";
             player.sendMessage(ChatColor.GRAY + "| " + assignedTag + urgentTag + ChatColor.GOLD + "[" + tickets.get(i).getLevel() + "]" + ChatColor.DARK_GREEN + "Ticket " + tickets.get(i).getID() + ChatColor.GRAY + " by " + ChatColor.DARK_GREEN + tickets.get(i).getUserFiled() + ChatColor.WHITE + ": " + tickets.get(i).getContents());
         }

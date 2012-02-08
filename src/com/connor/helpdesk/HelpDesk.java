@@ -104,16 +104,28 @@ public class HelpDesk extends JavaPlugin {
         }
     }
     
-    public ArrayList<HelpTicket> sortTicketsByTime() {
+    public ArrayList<HelpTicket> sortTickets() {
         synchronized (this) {
             Collections.sort(tickets, new Comparator<HelpTicket>() {
                 public int compare(HelpTicket o1, HelpTicket o2) {
-                    if (o1.getFileTime() < o2.getFileTime()) {
-                        return -1;
-                    } else if (o1.getFileTime() == o2.getFileTime()) {
-                        return 0; //Probably will never happen, ever.
+                    if (o1.isUrgent() && !o2.isUrgent()) {
+                        return -1; //first is urgent, should go before second    
+                    } else if (o2.isUrgent() && !o1.isUrgent()) {
+                        return 1; //second is urgent, should go before first
                     } else {
-                        return 1;
+                        if (o1.getLevel().toInt() > o2.getLevel().toInt()) {
+                            return -1; //first has higher level, should go before second
+                        } else if (o2.getLevel().toInt() > o1.getLevel().toInt()) {
+                            return 1; //second has higher level, should go before first
+                        } else {
+                            if (o1.getFileTime() < o2.getFileTime()) {
+                                return -1; //first was filed before second
+                            } else if (o2.getFileTime() < o1.getFileTime()) {
+                                return 1; //second was filed before first
+                            } else {
+                                return 0; //probably will never happen. they were both filed at the same time.
+                            }
+                        }
                     }
                 }
             });
