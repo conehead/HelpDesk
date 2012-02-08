@@ -233,12 +233,15 @@ public class HelpCommandExecutor implements CommandExecutor {
     }
 
     private boolean listTickets(Player player) {
-        if (!player.hasPermission("helpdesk.mod")
-                && !player.hasPermission("helpdesk.admin")
-                && !player.hasPermission("helpdesk.op"))
+        if (!helpDeskInstance.isHelpdeskStaff(player))
             return true;
         
         ArrayList<HelpTicket> tickets = helpDeskInstance.sortTickets();
+        
+        if (tickets.size() == 0) {
+            player.sendMessage(ChatColor.GRAY + "The ticket queue is empty");
+            return true;
+        }
 
         player.sendMessage(ChatColor.GRAY + "/ Filed Tickets");
         for (int i = 0; i < 8; i++) {
