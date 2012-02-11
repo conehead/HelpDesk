@@ -3,7 +3,7 @@ package com.connor.helpdesk;
 import org.bukkit.entity.Player;
 
 public enum HelpLevel {
-    MOD(1), ADMIN(2), OP(3);
+    NONE(0), MOD(1), ADMIN(2), OP(3);
 
     int numLevel;
     
@@ -16,14 +16,14 @@ public enum HelpLevel {
     }
     
     public static HelpLevel getPlayerHelpLevel(Player player) {
-        if (player.hasPermission("helpdesk.mod")) {
-            return MOD;
+        if (player.hasPermission("helpdesk.op")) {
+            return OP;
         } else if (player.hasPermission("helpdesk.admin")) {
             return ADMIN;
-        } else if (player.hasPermission("helpdesk.op")) {
-            return OP;
+        } else if (player.hasPermission("helpdesk.mod")) {
+            return MOD;
         }
-        return null;
+        return NONE;
     }
     
     public static int getPlayerHelpLevelInt(Player player) {

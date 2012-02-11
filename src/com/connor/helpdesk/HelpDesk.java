@@ -136,15 +136,15 @@ public class HelpDesk extends JavaPlugin {
     public void sendMessageToStaffLevel(HelpLevel level, String message) {
         for (Player p : getServer().getOnlinePlayers()) {
             if (level == HelpLevel.MOD) {
-                if (p.hasPermission("helpdesk.mod")) {
+                if (HelpLevel.getPlayerHelpLevel(p) == HelpLevel.MOD) {
                     p.sendMessage(message);
                 }
             } else if (level == HelpLevel.ADMIN) {
-                if (p.hasPermission("helpdesk.admin")) {
+                if (HelpLevel.getPlayerHelpLevel(p) == HelpLevel.ADMIN) {
                     p.sendMessage(message);
                 }
             } else if (level == HelpLevel.OP) {
-                if (p.hasPermission("helpdesk.op")) {
+                if (HelpLevel.getPlayerHelpLevel(p) == HelpLevel.OP) {
                     p.sendMessage(message);
                 }
             }
