@@ -20,7 +20,7 @@ HelpDesk operates in a way that it requires very little setup, and it assumes th
 Usage
 -----
 
-HelpDesk operates under the `/helpdesk` and `/ticket` commands, and they operate completely identically.
+HelpDesk operates under the `/helpdesk`, `/ticket`, and `/hd` commands, and they operate completely identically.
 
 Each help ticket added to HelpDesk has a "handler level." For example, if a Mod doesn't have the ability to handle a given ticket, they can use `/helpdesk elevate <ID>` to remove the ticket from their queue, and mark the ticket as something that an Admin has to handle. (Admins can subsequently do the same command to elevate it to OP)
 
