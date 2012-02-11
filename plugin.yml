@@ -3,7 +3,7 @@ main: com.connor.helpdesk.HelpDesk
 version: 1.0
 commands:
     helpdesk:
-        aliases: ticket
+        aliases: [ticket, hd]
         description: Use the help desk
         usage: /helpdesk ?
 permissions:
