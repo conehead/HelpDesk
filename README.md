@@ -42,12 +42,13 @@ HelpDesk will automatically notify all appropriate staff members every thirty se
 
 **Commands for Staff (Mod, Admin, OP):**
 
-	/helpdesk list                  | displays a list of tickets open
-	/helpdesk read <Ticket ID>      | reads the contents of any of the tickets
-	/helpdesk assign <Ticket ID>    | assigns the player to the ticket
-	/helpdesk elevate <Ticket ID>   | elevates the ticket level to ADMIN or OP
-	/helpdesk complete <Ticket ID>  | marks the ticket as complete
-	/helpdesk remove <Ticket ID>    | removes a ticket
-	/helpdesk urgent <Ticket ID>    | marks a ticket as urgent
-	/helpdesk noturgent <Ticket ID> | marks a ticket as normal
+	/helpdesk list                    | displays a list of tickets open
+	/helpdesk read <Ticket ID>        | reads the contents of any of the tickets
+	/helpdesk assign <Ticket ID>      | assigns the player to the ticket
+	/helpdesk pass <Ticket ID> <user> | passes the ticket to a different staff member
+	/helpdesk elevate <Ticket ID>     | elevates the ticket level to ADMIN or OP
+	/helpdesk complete <Ticket ID>    | marks the ticket as complete
+	/helpdesk remove <Ticket ID>      | removes a ticket
+	/helpdesk urgent <Ticket ID>      | marks a ticket as urgent
+	/helpdesk noturgent <Ticket ID>   | marks a ticket as normal
 It's that simple.
