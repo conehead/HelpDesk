@@ -354,6 +354,11 @@ public class HelpCommandExecutor implements CommandExecutor {
             return true;
         }
         
+        if (!helpDeskInstance.isHelpdeskStaff(passTo)) {
+            player.sendMessage(ChatColor.GRAY + "User isn't a staff member");
+            return true;
+        }
+        
         if (!ticket.isAssigned()) {
             player.sendMessage(ChatColor.GRAY + "Ticket not assigned yet");
             return true;

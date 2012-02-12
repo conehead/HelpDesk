@@ -180,7 +180,7 @@ public class HelpDesk extends JavaPlugin {
     } 
     
     public boolean isHelpdeskStaff(Player player) {
-        return player.hasPermission("helpdesk.mod") || player.hasPermission("helpdesk.admin") || player.hasPermission("helpdesk.op");
+        return HelpLevel.getPlayerHelpLevelInt(player) > HelpLevel.NONE.toInt();
     }
     
     public boolean doesHaveTicketAssigned(Player player) {
