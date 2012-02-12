@@ -22,6 +22,7 @@ public class HelpDesk extends JavaPlugin {
         commandExecutor = new HelpCommandExecutor(this);
 
         getCommand("helpdesk").setExecutor(commandExecutor);
+        getServer().getPluginManager().registerEvents(new HelpDeskGodListener(this), this);
         getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
             public void run() {
                 int modTickets = 0;
@@ -180,5 +181,13 @@ public class HelpDesk extends JavaPlugin {
     
     public boolean isHelpdeskStaff(Player player) {
         return player.hasPermission("helpdesk.mod") || player.hasPermission("helpdesk.admin") || player.hasPermission("helpdesk.op");
+    }
+    
+    public boolean doesHaveTicketAssigned(Player player) {
+        for (HelpTicket ticket : tickets) {
+            if (ticket.getAssignedUser().equals(player.getName()))
+                return true;
+        }
+        return false;
     }
 }
