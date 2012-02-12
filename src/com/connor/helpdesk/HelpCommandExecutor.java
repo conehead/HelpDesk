@@ -62,6 +62,10 @@ public class HelpCommandExecutor implements CommandExecutor {
         if (args[0].equalsIgnoreCase("demote") || args[0].equalsIgnoreCase("noturgent")) {
             return markTicketNormal(player, args);
         }
+        
+        if (args[0].equalsIgnoreCase("pass")) {
+            return passTicket(player, args);
+        }
 
         return false;
     }
@@ -74,6 +78,7 @@ public class HelpCommandExecutor implements CommandExecutor {
             player.sendMessage(ChatColor.GRAY + "| " + ChatColor.YELLOW + "list" + ChatColor.GRAY + ": Lists currently-open tickets");
             player.sendMessage(ChatColor.GRAY + "| " + ChatColor.YELLOW + "read <ID>" + ChatColor.GRAY + ": Reads the contents of a help ticket");
             player.sendMessage(ChatColor.GRAY + "| " + ChatColor.YELLOW + "assign <ID>" + ChatColor.GRAY + ": Assigns you to the ticket");
+            player.sendMessage(ChatColor.GRAY + "| " + ChatColor.YELLOW + "pass <ID> <USER>" + ChatColor.GRAY + ": re-assigns a ticket to another user"); 
             player.sendMessage(ChatColor.GRAY + "| " + ChatColor.YELLOW + "elevate <ID>" + ChatColor.GRAY + ": Elevates the ticket level to ADMIN or OP");
             player.sendMessage(ChatColor.GRAY + "| " + ChatColor.YELLOW + "urgent <ID>" + ChatColor.GRAY + ": Marks a ticket as urgent");
             player.sendMessage(ChatColor.GRAY + "| " + ChatColor.YELLOW + "noturgent <ID>" + ChatColor.GRAY + ": Marks a ticket as normal");
@@ -326,6 +331,37 @@ public class HelpCommandExecutor implements CommandExecutor {
             }
         }
 
+        return true;
+    }
+    
+    private boolean passTicket(Player player, String[] args) {
+        if (args.length < 3)
+            return false;
+
+        HelpTicket ticket = helpDeskInstance.getTicketWithID(args[1]);
+
+        if (ticket == null) {
+            player.sendMessage(ChatColor.GRAY + "Invalid ticket ID");
+            return true;
+        }
+        
+        if (!helpDeskInstance.isHelpdeskStaff(player))
+            return true;
+        
+        Player passTo = helpDeskInstance.getServer().getPlayerExact(args[2]);
+        if (passTo == null) {
+            player.sendMessage(ChatColor.GRAY + "Invalid username to pass ticket to");
+            return true;
+        }
+        
+        if (!ticket.isAssigned()) {
+            player.sendMessage(ChatColor.GRAY + "Ticket not assigned yet");
+            return true;
+        }
+        
+        ticket.setAssignedUser(passTo.getName());
+        helpDeskInstance.notifyAllHelpdeskStaff(staffTicketMessage(ChatColor.DARK_GREEN, "passed to " + passTo.getName(), ticket));
+        
         return true;
     }
     
