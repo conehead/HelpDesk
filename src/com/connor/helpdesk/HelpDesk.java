@@ -7,6 +7,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.logging.Logger;
 
 public class HelpDesk extends JavaPlugin {
@@ -26,6 +27,7 @@ public class HelpDesk extends JavaPlugin {
                 int modTickets = 0;
                 int adminTickets = 0;
                 int opTickets = 0;
+                HashMap<String, Integer> playerAssignedCounts = new HashMap<String, Integer>();
                 for (HelpTicket ticket : tickets) {
                     if (!ticket.isAssigned() && !ticket.isCompleted()) {
                         if (ticket.getLevel() == HelpLevel.MOD) {
@@ -38,6 +40,11 @@ public class HelpDesk extends JavaPlugin {
                         } else if (ticket.getLevel() == HelpLevel.OP) {
                             opTickets++;
                         }
+                    } else if (ticket.isAssigned() && !ticket.isCompleted()) {
+                        int current = 0;
+                        if (playerAssignedCounts.get(ticket.getAssignedUser()) != null)
+                            current = playerAssignedCounts.get(ticket.getAssignedUser());
+                        playerAssignedCounts.put(ticket.getAssignedUser(), ++current);
                     }
                 }
                 
@@ -60,6 +67,18 @@ public class HelpDesk extends JavaPlugin {
                         sendMessageToStaffLevel(HelpLevel.OP, ChatColor.GOLD + "[HELPDESK] " + ChatColor.GRAY + "There is " + ChatColor.DARK_GREEN + "1 ticket open");
                     } else {
                         sendMessageToStaffLevel(HelpLevel.OP, ChatColor.GOLD + "[HELPDESK] " + ChatColor.GRAY + "There are " + ChatColor.DARK_GREEN + opTickets + " tickets open");
+                    }
+                }
+                
+                for (String playerName : playerAssignedCounts.keySet()) {
+                    Player p = getServer().getPlayerExact(playerName);
+                    if (p == null) continue;
+                    int amount = playerAssignedCounts.get(playerName);
+
+                    if (amount == 1) {
+                        p.sendMessage(ChatColor.GOLD + "[HELPDESK] " + ChatColor.GRAY + "You are " + ChatColor.DARK_GREEN + "assigned to 1 ticket");
+                    } else {
+                        p.sendMessage(ChatColor.GOLD + "[HELPDESK] " + ChatColor.GRAY + "You are " + ChatColor.DARK_GREEN + "assigned to " + amount + " tickets");
                     }
                 }
             }
