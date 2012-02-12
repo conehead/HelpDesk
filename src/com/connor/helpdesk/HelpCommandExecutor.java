@@ -249,6 +249,7 @@ public class HelpCommandExecutor implements CommandExecutor {
         }
 
         player.sendMessage(ChatColor.GRAY + "/ Filed Tickets");
+        int ticketsDisplayed = 0;
         for (int i = 0; i < 8; i++) {
             if (tickets.size() <= i)
                 break;
@@ -270,6 +271,11 @@ public class HelpCommandExecutor implements CommandExecutor {
 
             String urgentTag = tickets.get(i).isUrgent() ? ChatColor.RED + "[!]" : "";
             player.sendMessage(ChatColor.GRAY + "| " + assignedTag + urgentTag + ChatColor.GOLD + "[" + tickets.get(i).getLevel() + "]" + ChatColor.DARK_GREEN + "Ticket " + tickets.get(i).getID() + ChatColor.GRAY + " by " + ChatColor.DARK_GREEN + tickets.get(i).getUserFiled() + ChatColor.WHITE + ": " + tickets.get(i).getContents());
+            ticketsDisplayed++; 
+        }
+        
+        if (ticketsDisplayed == 0) {
+            player.sendMessage(ChatColor.GRAY+ "| There are no tickets to display");
         }
         return true;
     }
