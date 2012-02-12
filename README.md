@@ -26,7 +26,9 @@ Each help ticket added to HelpDesk has a "handler level." For example, if a Mod 
 
 Each HelpTicket also has an urgency flag. If at any time the person filing the ticket or a staff member thinks a ticket is urgent, they can use `/helpdesk urgent <ID>` to flag it as such. If the person filing the ticket or a staff member doesn't think it's urgent, they can use `/helpdesk noturgent <ID>` to change its priority to normal.
 
-If a staff member wants to accept responsibility for a ticket, they can use `/helpdesk assign <ID>` and it'll be removed from the active queue, assigned to them.
+If a staff member wants to accept responsibility for a ticket, they can use `/helpdesk assign <ID>` and it'll be removed from the active queue, assigned to them. **They will be godded until they complete or remove the ticket**
+
+If a staff member decides they want to pass responsibility of a ticket to another staff member, they can use `/helpdesk pass <ID> <user>`.
 
 When a help ticket has been filled, a staff member can use `/helpdesk complete <ID>` to mark the ticket as completed. If the ticket should be removed without completion, the staff member should use `/helpdesk remove <ID>`.
 
