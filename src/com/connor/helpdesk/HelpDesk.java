@@ -185,8 +185,10 @@ public class HelpDesk extends JavaPlugin {
     
     public boolean doesHaveTicketAssigned(Player player) {
         for (HelpTicket ticket : tickets) {
-            if (ticket.getAssignedUser().equals(player.getName()))
-                return true;
+            if (ticket.getAssignedUser() != null) {
+                if (ticket.getAssignedUser().equals(player.getName()))
+                    return true;
+            }
         }
         return false;
     }
