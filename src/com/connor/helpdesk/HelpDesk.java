@@ -15,13 +15,10 @@ public class HelpDesk extends JavaPlugin {
     public Logger log = Logger.getLogger("Minecraft");
     private ArrayList<HelpTicket> tickets;
     
-    private HelpCommandExecutor commandExecutor;
-    
     public void onEnable() {
         tickets = new ArrayList<HelpTicket>();
-        commandExecutor = new HelpCommandExecutor(this);
 
-        getCommand("helpdesk").setExecutor(commandExecutor);
+        getCommand("helpdesk").setExecutor(new HelpCommandExecutor(this));
         getServer().getPluginManager().registerEvents(new HelpDeskGodListener(this), this);
         getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
             public void run() {
